@@ -49,4 +49,12 @@ module.exports = {
 
     return true;
   },
+  /**
+   * 获取当前 session 的 user-id
+   */
+  getUserId(): number {
+    const { ctx: { headers, app: { config } } } = this;
+
+    return parseInt(headers[config.userIdHeaderKey])
+  }
 };

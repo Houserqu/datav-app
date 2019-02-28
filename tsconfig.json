@@ -20,7 +20,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "inlineSourceMap": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "baseUrl": "./",
+    "paths": {
+      "ramda": [
+        "location-of-types/npm-ramda-package/index"
+      ]
+    }
   },
   "exclude": [
     "app/public",
