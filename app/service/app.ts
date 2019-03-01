@@ -30,7 +30,6 @@ export default class app extends Service {
   }
 
   public async getApp(id: number[]): Promise<createAppObj[]> {
-    console.log(id);
     const result = await this.app.mysql.select('app', {
       where: {
         id,
@@ -53,17 +52,39 @@ export default class app extends Service {
     }
   }
 
-  public async delApp(id: number[]): Promise<void> {
-    const result = await this.app.mysql.query('DELETE FROM app WHERE id IN (?);', [id]);
+  public async delApp(id: number[], userId: number): Promise<void> {
+    console.log(id, userId)
+    const result = await this.app.mysql.query('DELETE FROM app WHERE id IN (?) AND user_id = ?;', [id, userId]);
 
-    if (result.affectedRows = 0) {
+    if (result.affectedRows == 0) {
       throw new Error('删除失败')
+    }
+
+    if (result.affectedRows > 0 && result.affectedRows < id.length) {
+      throw new Error('部分删除成功')
     }
   }
 
-  public async updateApp(app: createAppObj): Promise<void> {
-    const result = await this.app.mysql.update('app', app);
-    if (result.affectedRows = 0) {
+  public async updateApp(app: createAppObj, userId: number): Promise<void> {
+    const result = await this.app.mysql.update('app', app, {
+      where: {
+        id: app.id,
+        user_id: userId
+      }
+    });
+    if (result.affectedRows == 0) {
+      throw new Error('更新失败')
+    }
+  }
+
+  public async setStatus(id: number, status: number, userId: number): Promise<void> {
+    const result = await this.app.mysql.update('app', { id, status }, {
+      where: {
+        id,
+        user_id: userId
+      }
+    });
+    if (result.affectedRows == 0) {
       throw new Error('更新失败')
     }
   }

@@ -60,10 +60,31 @@ export default class AppController extends Controller {
   // 删除资源
   public async delete() {
     const { ctx: { helper, service, request } } = this;
+    try {
+      const ids = request.body.id.split(',');
+
+      await service.app.delApp(ids, helper.getUserId());
+      helper.resSuccess(request.body.id);
+    } catch (e) {
+      helper.resError(e.message)
+    }
+  }
+
+  // 设置状态
+  public async setStatus() {
+    const { ctx: { helper, service, request } } = this;
+
+    const id = parseInt(request.body.id)
+    const status = parseInt(request.body.status)
+
+    if (!helper.validate({
+      status: [1, 2, 3],
+      id: 'int'
+    }, { status, id })) return;
 
     try {
-      await service.app.delApp(request.body.id.split(','));
-      helper.resSuccess(request.body.id);
+      await service.app.setStatus(id, status, helper.getUserId());
+      helper.resSuccess(id);
     } catch (e) {
       helper.resError(e.message)
     }
@@ -78,14 +99,8 @@ export default class AppController extends Controller {
     if (!helper.validate({ id: 'int' }, updateApp)) return;
 
     try {
-      const curApp = await service.app.getApp([updateApp.id]);
-
-      if (curApp.length > 0 && (curApp[0].user_id === helper.getUserId())) {
-        await service.app.updateApp(updateApp as createAppObj);
-        helper.resSuccess(params.id);
-      } else {
-        helper.resError('应用不存在或者没有操作权限')
-      }
+      await service.app.updateApp(updateApp as createAppObj, helper.getUserId());
+      helper.resSuccess(params.id);
 
     } catch (e) {
       helper.resError(e.message)

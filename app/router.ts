@@ -9,4 +9,7 @@ export default (app: Application) => {
   router.post('/api/app/create', controller.app.create); // data
   router.post('/api/app/update', controller.app.update); // data: { id }
   router.post('/api/app/delete', controller.app.delete); // id = id1, id2
+
+  // 设置应用状态
+  router.post('/api/app/set-status', controller.app.setStatus); // 
 };
