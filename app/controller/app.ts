@@ -10,9 +10,9 @@ const createRule = {
   end_time: 'string?',
   describe: 'string?',
   logo: 'string?',
-  access: 'int?',
-  com_theme_id: 'int',
-  page_theme_id: 'int',
+  access: 'string?',
+  com_theme_id: 'string',
+  page_theme_id: 'string',
   user_id: 'int'
 };
 
@@ -46,6 +46,7 @@ export default class AppController extends Controller {
     console.log(helper.getUserId())
     const newApp = R.pick(Object.keys(createRule), { ...request.body, user_id: helper.getUserId() })
 
+    console.log(newApp)
     // 参数校验
     if (!helper.validate(createRule, newApp)) return;
 
@@ -96,7 +97,7 @@ export default class AppController extends Controller {
     const updateApp = R.pick(['id', ...Object.keys(createRule)], request.body)
 
     // 参数校验
-    if (!helper.validate({ id: 'int' }, updateApp)) return;
+    if (!helper.validate({ id: 'string' }, updateApp)) return;
 
     try {
       await service.app.updateApp(updateApp as createAppObj, helper.getUserId());
