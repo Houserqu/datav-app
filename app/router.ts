@@ -12,4 +12,7 @@ export default (app: Application) => {
 
   // 设置应用状态
   router.post('/api/app/set-status', controller.app.setStatus); // 
+
+  router.get('/api/app/category/list_com', controller.category.listWithComponent);
+  router.get('/api/app/category/list', controller.category.list);
 };
