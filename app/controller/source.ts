@@ -1,37 +1,30 @@
 // import { createAppObj } from './../service/app';
-import { createAppObj } from "../service/app"
+import { createAppObj } from "../service/source"
 import { Controller } from "egg"
 import * as R from "ramda"
 
 // 创建资源字段校验规则
 const createRule = {
   name: "string",
-  start_time: "string?",
-  end_time: "string?",
   describe: "string?",
-  logo: "string?",
-  access: "string?",
-  com_theme_id: "string",
-  page_theme_id: "string",
+  type: "string",
+  content: "string?",
+  refresh: "string?",
   user_id: "int"
 }
 
 // 更新资源字段校验规则
 const updateRule = {
   name: "string?",
-  start_time: "string?",
-  end_time: "string?",
   describe: "string?",
-  logo: "string?",
-  access: "string?",
-  com_theme_id: "string?",
-  page_theme_id: "string?",
-  design_json: "string?",
+  type: "string?",
+  content: "string?",
+  refresh: "string?",
   user_id: "int",
   id: "int"
 }
 
-export default class AppController extends Controller {
+export default class SourceController extends Controller {
   // 资源列表
   public async list() {
     const {
@@ -39,7 +32,7 @@ export default class AppController extends Controller {
     } = this
 
     try {
-      const res = await service.app.getAppList(
+      const res = await service.source.getAppList(
         parseInt(query.pageSize),
         parseInt(query.page || 1),
         query.noPage
@@ -56,7 +49,7 @@ export default class AppController extends Controller {
       ctx: { helper, service, query }
     } = this
     try {
-      const res = await service.app.getApp(query.id.split(","))
+      const res = await service.source.getApp(query.id.split(","))
       helper.resSuccess(res)
     } catch (e) {
       helper.resError(e.message)
@@ -79,7 +72,7 @@ export default class AppController extends Controller {
     if (!helper.validate(createRule, newApp)) return
 
     try {
-      const id = await service.app.createApp(newApp as createAppObj)
+      const id = await service.source.createApp(newApp as createAppObj)
       helper.resSuccess(id)
     } catch (e) {
       helper.resError(e.message)
@@ -94,7 +87,7 @@ export default class AppController extends Controller {
     try {
       const ids = request.body.id.split(",")
 
-      await service.app.delApp(ids, helper.getUserId())
+      await service.source.delApp(ids, helper.getUserId())
       helper.resSuccess(request.body.id)
     } catch (e) {
       helper.resError(e.message)
@@ -122,7 +115,7 @@ export default class AppController extends Controller {
       return
 
     try {
-      await service.app.setStatus(id, status, helper.getUserId())
+      await service.source.setStatus(id, status, helper.getUserId())
       helper.resSuccess(id)
     } catch (e) {
       helper.resError(e.message)
@@ -140,7 +133,10 @@ export default class AppController extends Controller {
     if (!helper.validate({ id: "string" }, updateApp)) return
 
     try {
-      await service.app.updateApp(updateApp as createAppObj, helper.getUserId())
+      await service.source.updateApp(
+        updateApp as createAppObj,
+        helper.getUserId()
+      )
       helper.resSuccess(params.id)
     } catch (e) {
       helper.resError(e.message)
