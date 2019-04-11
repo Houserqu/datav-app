@@ -48,11 +48,15 @@ export default class SourceController extends Controller {
     const {
       ctx: { helper, service, query }
     } = this
-    try {
-      const res = await service.source.getApp(query.id.split(","))
-      helper.resSuccess(res)
-    } catch (e) {
-      helper.resError(e.message)
+    if (query.id) {
+      try {
+        const res = await service.source.getApp(query.id.split(","))
+        helper.resSuccess(res)
+      } catch (e) {
+        helper.resError(e.message)
+      }
+    } else {
+      helper.resSuccess([])
     }
   }
 
