@@ -50,6 +50,20 @@ export default class AppController extends Controller {
     }
   }
 
+  // 当前用户资源列表
+  public async userList() {
+    const {
+      ctx: { helper, service }
+    } = this
+
+    try {
+      const res = await service.app.getUserAppList(helper.getUserId())
+      helper.resSuccess(res)
+    } catch (e) {
+      helper.resError(e.message)
+    }
+  }
+
   // 单个资源
   public async some() {
     const {
